@@ -50,37 +50,37 @@ var directions = []Hex{
 //	      \  +R   /
 //	       \ _ _ /
 type Hex struct {
-	q int // x axis
-	r int // y axis
-	s int // z axis
+	Q int // x axis
+	R int // y axis
+	S int // z axis
 }
 
 func NewHex(q, r int) Hex {
-	h := Hex{q: q, r: r, s: -q - r}
+	h := Hex{Q: q, R: r, S: -q - r}
 	return h
 }
 
 func (h Hex) String() string {
-	return fmt.Sprintf("(%d,%d)", h.q, h.r)
+	return fmt.Sprintf("(%d,%d)", h.Q, h.R)
 }
 
 // Adds another hexagon
 func (h Hex) Add(o Hex) Hex {
-	return NewHex(h.q+o.q, h.r+o.r)
+	return NewHex(h.Q+o.Q, h.R+o.R)
 }
 
 // Subtracts another hexagon
 func (h Hex) Subtract(o Hex) Hex {
-	return NewHex(h.q-o.q, h.r-o.r)
+	return NewHex(h.Q-o.Q, h.R-o.R)
 }
 
 // Scales an hexagon by a k factor. If factor k is 1 there's no change
 func (h Hex) Scale(k int) Hex {
-	return NewHex(h.q*k, h.r*k)
+	return NewHex(h.Q*k, h.R*k)
 }
 
 func (h Hex) Length() int {
-	return int((math.Abs(float64(h.q)) + math.Abs(float64(h.r)) + math.Abs(float64(h.s))) / 2.)
+	return int((math.Abs(float64(h.Q)) + math.Abs(float64(h.R)) + math.Abs(float64(h.S))) / 2.)
 }
 
 func (h Hex) Distance(o Hex) int {
@@ -107,7 +107,7 @@ func (h Hex) Neighbors() []Hex {
 // TODO: Name doesn't seem to fit
 func (h Hex) LineDraw(o Hex) []Hex {
 	hexLerp := func(a FractionalHex, b FractionalHex, t float64) FractionalHex {
-		return NewFractionalHex(a.q*(1-t)+b.q*t, a.r*(1-t)+b.r*t)
+		return NewFractionalHex(a.Q*(1-t)+b.Q*t, a.R*(1-t)+b.R*t)
 	}
 
 	N := h.Distance(o)
@@ -118,8 +118,8 @@ func (h Hex) LineDraw(o Hex) []Hex {
 	// To make it always push these points in the same direction, add an “epsilon” value to a.
 	// This will “nudge” things in the same direction when it’s on an edge, and leave other points unaffected.
 
-	a_nudge := NewFractionalHex(float64(h.q)+0.000001, float64(h.r)+0.000001)
-	b_nudge := NewFractionalHex(float64(o.q)+0.000001, float64(o.r)+0.000001)
+	a_nudge := NewFractionalHex(float64(h.Q)+0.000001, float64(h.R)+0.000001)
+	b_nudge := NewFractionalHex(float64(o.Q)+0.000001, float64(o.R)+0.000001)
 
 	results := make([]Hex, 0)
 	step := 1. / math.Max(float64(N), 1)
