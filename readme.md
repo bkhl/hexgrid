@@ -2,7 +2,7 @@
 
 This is a fork of <https://github.com/pmcxs/hexgrid>. It's based on the algorithms described at <http://www.redblobgames.com/grids/hexagons/implementation.html>.
 
-**Note:** For now this is a mere copy with small adjustments for my use case and very much TBD.
+**Note:** For now this is a mere copy with small adjustments for my use case and very much WIP.
 
 ## Installation
 
