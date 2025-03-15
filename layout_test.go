@@ -6,26 +6,26 @@ import (
 	"testing"
 )
 
-//        100(size) 50  50
-//        |-------|---|---|
-//        |       |   *********
-//        |       |  * U:1,V:-1*
-//        |       | *           *
-//        |        * (150,-86.6) *
-//        *********       +       *********
-//       * U:0,V:0 *             * U:2,V:-1*
-//      *           *           *           *
-//     *    (0,0)    *         *   (300,0)   *
-//    *       +       *********       +       *
-//     *             * U:1,V:0 *             *
-//      *           *           *           *
-//       *         *  (150,86.6) *         *
-//        *********       +       *********
-//                 *             *
-//                  *           *
-//                   *         *
-//                    *********
+//	   100(size) 50  50
+//	   |-------|---|---|
+//	   |       |   *********
+//	   |       |  * U:1,V:-1*
+//	   |       | *           *
+//	   |        * (150,-86.6) *
+//	   *********       +       *********
+//	  * U:0,V:0 *             * U:2,V:-1*
+//	 *           *           *           *
+//	*    (0,0)    *         *   (300,0)   *
 //
+// *       +       *********       +       *
+//   - * U:1,V:0 *             *
+//   - *           *           *
+//   - *  (150,86.6) *         *
+//     *********       +       *********
+//   - *
+//   - *
+//   - *
+//     *********
 var defaultLayout = layout{size: point{100, 100}, origin: point{0, 0}, orientation: orientationFlat}
 
 // utility functions
@@ -41,7 +41,7 @@ func toFixed(num float64, precision int) float64 {
 func TestHexToPixel(t *testing.T) {
 
 	var testCases = []struct {
-		hexA     hex
+		hexA     Hex
 		expected string
 	}{
 		{NewHex(0, 0), "0.0;0.0"},
@@ -66,7 +66,7 @@ func TestPixelToHex(t *testing.T) {
 
 	var testCases = []struct {
 		point    point
-		expected hex
+		expected Hex
 	}{
 		{point{0, 0}, NewHex(0, 0)},
 		{point{150, 87}, NewHex(1, 0)},
@@ -83,18 +83,19 @@ func TestPixelToHex(t *testing.T) {
 	}
 }
 
-//          50     100     50
-//         |---|---|---|---|
+//	 50     100     50
+//	|---|---|---|---|
 //
 // (-50;-86.6) +*******+ (50;-86.6)
-//            *         *
-//           *           *
-//          *    (0,0)    *
-//(-100;0) +       +       + (100;0)
-//          *             *
-//           *           *
-//            *         *
-//  (-50;86.6) +*******+ (50;86.6)
+//   - *
+//   - *
+//   - (0,0)    *
+//
+// (-100;0) +       +       + (100;0)
+//   - *
+//   - *
+//   - *
+//     (-50;86.6) +*******+ (50;86.6)
 func TestHexagonCorners(t *testing.T) {
 
 	corners := HexagonCorners(defaultLayout, NewHex(0, 0))

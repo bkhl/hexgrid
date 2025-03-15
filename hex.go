@@ -5,18 +5,18 @@ import (
 	"math"
 )
 
-type direction int
+type Direction int
 
 const (
-	directionSE = iota
-	directionNE
-	directionN
-	directionNW
-	directionSW
-	directionS
+	DirectionSE = iota
+	DirectionNE
+	DirectionN
+	DirectionNW
+	DirectionSW
+	DirectionS
 )
 
-var directions = []hex{
+var directions = []Hex{
 	NewHex(1, 0),
 	NewHex(1, -1),
 	NewHex(0, -1),
@@ -31,118 +31,86 @@ var directions = []hex{
 // - Q the diagonal one
 // - S can be ignored
 // For additional reference on these coordinate systems: http://www.redblobgames.com/grids/hexagons/#coordinates
-//           _ _
-//         /     \
-//    _ _ /(0,-1) \ _ _
-//  /     \  -R   /     \
+//
+//	         _ _
+//	       /     \
+//	  _ _ /(0,-1) \ _ _
+//	/     \  -R   /     \
+//
 // /(-1,0) \ _ _ /(1,-1) \
 // \  -Q   /     \       /
-//  \ _ _ / (0,0) \ _ _ /
-//  /     \       /     \
+//
+//	\ _ _ / (0,0) \ _ _ /
+//	/     \       /     \
+//
 // /(-1,1) \ _ _ / (1,0) \
 // \       /     \  +Q   /
-//  \ _ _ / (0,1) \ _ _ /
-//        \  +R   /
-//         \ _ _ /
-type hex struct {
+//
+//	\ _ _ / (0,1) \ _ _ /
+//	      \  +R   /
+//	       \ _ _ /
+type Hex struct {
 	q int // x axis
 	r int // y axis
 	s int // z axis
 }
 
-func NewHex(q, r int) hex {
-
-	h := hex{q: q, r: r, s: -q - r}
+func NewHex(q, r int) Hex {
+	h := Hex{q: q, r: r, s: -q - r}
 	return h
-
 }
 
-func (h hex) String() string {
+func (h Hex) String() string {
 	return fmt.Sprintf("(%d,%d)", h.q, h.r)
 }
 
-// fractionHex provides a more precise representation for hexagons when precision is required.
-// It's also represented in Cube Coordinates
-type fractionalHex struct {
-	q float64
-	r float64
-	s float64
+// Adds another hexagon
+func (h Hex) Add(o Hex) Hex {
+	return NewHex(h.q+o.q, h.r+o.r)
 }
 
-func NewFractionalHex(q, r float64) fractionalHex {
-
-	h := fractionalHex{q: q, r: r, s: -q - r}
-	return h
-
-}
-
-// Rounds a FractionalHex to a Regular Hex
-func (h fractionalHex) Round() hex {
-
-	roundToInt := func(a float64) int {
-		if a < 0 {
-			return int(a - 0.5)
-		}
-		return int(a + 0.5)
-	}
-
-	q := roundToInt(h.q)
-	r := roundToInt(h.r)
-	s := roundToInt(h.s)
-
-	q_diff := math.Abs(float64(q) - h.q)
-	r_diff := math.Abs(float64(r) - h.r)
-	s_diff := math.Abs(float64(s) - h.s)
-
-	if q_diff > r_diff && q_diff > s_diff {
-		q = -r - s
-	} else if r_diff > s_diff {
-		r = -q - s
-	} else {
-		s = -q - r
-	}
-	return hex{q, r, s}
-
-}
-
-// Adds two hexagons
-func HexAdd(a, b hex) hex {
-	return NewHex(a.q+b.q, a.r+b.r)
-}
-
-// Subtracts two hexagons
-func HexSubtract(a, b hex) hex {
-	return NewHex(a.q-b.q, a.r-b.r)
+// Subtracts another hexagon
+func (h Hex) Subtract(o Hex) Hex {
+	return NewHex(h.q-o.q, h.r-o.r)
 }
 
 // Scales an hexagon by a k factor. If factor k is 1 there's no change
-func HexScale(a hex, k int) hex {
-	return NewHex(a.q*k, a.r*k)
+func (h Hex) Scale(k int) Hex {
+	return NewHex(h.q*k, h.r*k)
 }
 
-func HexLength(hex hex) int {
-	return int((math.Abs(float64(hex.q)) + math.Abs(float64(hex.r)) + math.Abs(float64(hex.s))) / 2.)
+func (h Hex) Length() int {
+	return int((math.Abs(float64(h.q)) + math.Abs(float64(h.r)) + math.Abs(float64(h.s))) / 2.)
 }
 
-func HexDistance(a, b hex) int {
-	sub := HexSubtract(a, b)
-	return HexLength(sub)
+func (h Hex) Distance(o Hex) int {
+	sub := h.Subtract(o)
+	return sub.Length()
 }
 
 // Returns the neighbor hexagon at a certain direction
-func HexNeighbor(h hex, direction direction) hex {
-	directionOffset := directions[direction]
-	return NewHex(h.q+directionOffset.q, h.r+directionOffset.r)
+// TODO: Not sure if I like this approach
+func (h Hex) Neighbor(direction Direction) Hex {
+	return h.Add(directions[direction])
 }
 
-// Returns the slice of hexagons that exist on a line that goes from hexagon a to hexagon b
-func HexLineDraw(a, b hex) []hex {
+// Returns all neighboring hexagons
+func (h Hex) Neighbors() []Hex {
+	neighbors := make([]Hex, len(directions))
+	for i, d := range directions {
+		neighbors[i] = h.Add(d)
+	}
+	return neighbors
+}
 
-	hexLerp := func(a fractionalHex, b fractionalHex, t float64) fractionalHex {
+// Returns the slice of hexagons that exist on a line that goes from the hexagon to another
+// TODO: Name doesn't seem to fit
+func (h Hex) LineDraw(o Hex) []Hex {
+	hexLerp := func(a FractionalHex, b FractionalHex, t float64) FractionalHex {
 		return NewFractionalHex(a.q*(1-t)+b.q*t, a.r*(1-t)+b.r*t)
 	}
 
-	N := HexDistance(a, b)
+	N := h.Distance(o)
 
 	// Sometimes the hexLerp will output a point that’s on an edge.
 	// On some systems, the rounding code will push that to one side or the other,
@@ -150,10 +118,10 @@ func HexLineDraw(a, b hex) []hex {
 	// To make it always push these points in the same direction, add an “epsilon” value to a.
 	// This will “nudge” things in the same direction when it’s on an edge, and leave other points unaffected.
 
-	a_nudge := NewFractionalHex(float64(a.q)+0.000001, float64(a.r)+0.000001)
-	b_nudge := NewFractionalHex(float64(b.q)+0.000001, float64(b.r)+0.000001)
+	a_nudge := NewFractionalHex(float64(h.q)+0.000001, float64(h.r)+0.000001)
+	b_nudge := NewFractionalHex(float64(o.q)+0.000001, float64(o.r)+0.000001)
 
-	results := make([]hex, 0)
+	results := make([]Hex, 0)
 	step := 1. / math.Max(float64(N), 1)
 
 	for i := 0; i <= N; i++ {
@@ -162,45 +130,22 @@ func HexLineDraw(a, b hex) []hex {
 	return results
 }
 
-// Returns the set of hexagons around a certain center for a given radius
-func HexRange(center hex, radius int) []hex {
-
-	var results = make([]hex, 0)
-
-	if radius >= 0 {
-		for dx := -radius; dx <= radius; dx++ {
-
-			for dy := math.Max(float64(-radius), float64(-dx-radius)); dy <= math.Min(float64(radius), float64(-dx+radius)); dy++ {
-				results = append(results, HexAdd(center, NewHex(int(dx), int(dy))))
+// Returns the set of hexagons around the hexagon for a given radius
+func (h Hex) Range(r int) []Hex {
+	var results = make([]Hex, 0)
+	if r >= 0 {
+		for dx := -r; dx <= r; dx++ {
+			for dy := math.Max(float64(-r), float64(-dx-r)); dy <= math.Min(float64(r), float64(-dx+r)); dy++ {
+				results = append(results, h.Add(NewHex(int(dx), int(dy))))
 			}
 		}
 	}
-
-	return results
-
-}
-
-// Returns the set of hexagons that form a rectangle with the specified width and height
-func HexRectangleGrid(width, height int) []hex {
-
-	results := make([]hex, 0)
-
-	for q := 0; q < width; q++ {
-		qOffset := int(math.Floor(float64(q) / 2.))
-
-		for r := -qOffset; r < height-qOffset; r++ {
-
-			results = append(results, NewHex(q, r))
-		}
-	}
-
 	return results
 }
 
-// Determines if a given hexagon is visible from another hexagon, taking into consideration a set of blocking hexagons
-func HexHasLineOfSight(center hex, target hex, blocking []hex) bool {
-
-	contains := func(s []hex, e hex) bool {
+// Determines if a given hexagon is visible from the hexagon, taking into consideration a set of blocking hexagons
+func (h Hex) HasLineOfSight(target Hex, blocking []Hex) bool {
+	contains := func(s []Hex, e Hex) bool {
 		for _, a := range s {
 			if a == e {
 				return true
@@ -209,9 +154,8 @@ func HexHasLineOfSight(center hex, target hex, blocking []hex) bool {
 		return false
 	}
 
-	for _, h := range HexLineDraw(center, target) {
-
-		if contains(blocking, h) {
+	for _, hexOnLine := range h.LineDraw(target) {
+		if contains(blocking, hexOnLine) {
 			return false
 		}
 	}
@@ -219,19 +163,26 @@ func HexHasLineOfSight(center hex, target hex, blocking []hex) bool {
 	return true
 }
 
-// Returns the list of hexagons that are visible from a given hexagon
-func HexFieldOfView(source hex, candidates []hex, blocking []hex) []hex {
-
-	results := make([]hex, 0)
-
-	for _, h := range candidates {
-
-		distance := HexDistance(source, h)
-
-		if len(blocking) == 0 || distance <= 1 || HexHasLineOfSight(source, h, blocking) {
-			results = append(results, h)
+// Returns the list of hexagons that are visible from the hexagon
+func (h Hex) FieldOfView(candidates []Hex, blocking []Hex) []Hex {
+	results := make([]Hex, 0)
+	for _, candidate := range candidates {
+		distance := h.Distance(candidate)
+		if len(blocking) == 0 || distance <= 1 || h.HasLineOfSight(candidate, blocking) {
+			results = append(results, candidate)
 		}
 	}
+	return results
+}
 
+// Returns the set of hexagons that form a rectangle with the specified width and height
+func RectangleGrid(width, height int) []Hex {
+	results := make([]Hex, 0)
+	for q := 0; q < width; q++ {
+		qOffset := int(math.Floor(float64(q) / 2.))
+		for r := -qOffset; r < height-qOffset; r++ {
+			results = append(results, NewHex(q, r))
+		}
+	}
 	return results
 }

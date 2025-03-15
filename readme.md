@@ -1,17 +1,19 @@
 # Hexgrid
 
-This is a GO (Golang) library used to handle regular hexagons.
-It's based on the algorithms described at http://www.redblobgames.com/grids/hexagons/implementation.html
+This is a fork of <https://github.com/pmcxs/hexgrid>. It's based on the algorithms described at <http://www.redblobgames.com/grids/hexagons/implementation.html>.
+
+**Note:** For now this is a mere copy with small adjustments for my use case and very much TBD.
 
 ## Installation
 
-    go get github.com/pmcxs/hexgrid
+    go get github.com/Laminator42/hexgrid
 
 ## Usage
+
 #### Importing
 
 ```go
-import "github.com/pmcxs/hexgrid"
+import "github.com/Laminator42/hexgrid"
 ```
 
 ### Examples
@@ -26,7 +28,7 @@ hexagonB := NewHex(2,3) //at axial coordinates Q=2 R=3
 #### Measuring the distance (in hexagons) between two hexagons
 
 ```go
-distance := HexDistance(hexagonA, hexagonB)
+distance := hexagonA.Distance(hexagonB)
 ```
 
 #### Getting the array of hexagons on the path between two hexagons
@@ -34,9 +36,8 @@ distance := HexDistance(hexagonA, hexagonB)
 ```go
 origin := NewHex(10,20)
 destination := NewHex(30,40)
-path := HexLineDraw(origin, destination) 
+path := origin.LineDraw(destination) 
 ```
-
 
 #### Creating a layout
 
@@ -52,7 +53,6 @@ layout: = layout{size, origin, orientationFlat}
 hex := NewHex(1,0)             
 pixel := HexToPixel(layout,hex)  // Pixel that corresponds to the center of hex 1,0 (in the given layout)
 ```
-
 
 #### Obtaining the hexagon that contains the given pixel (and rounding it)
 
@@ -76,7 +76,7 @@ hex := PixelToHex(layout, point).Round()
 ## Credits
 
 * Pedro Sousa
-* Red Blob Games (http://www.redblobgames.com/grids/hexagons/implementation.html)
+* Red Blob Games (<http://www.redblobgames.com/grids/hexagons/implementation.html>)
 
 ## License
 
