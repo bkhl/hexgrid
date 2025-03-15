@@ -7,10 +7,22 @@ type Point struct {
 	y float64
 }
 
+func NewPoint(x, y float64) *Point {
+	return &Point{x: x, y: y}
+}
+
 type Layout struct {
 	orientation orientation
 	size        Point // multiplication factor relative to the canonical hexagon, where the points are on a unit circle
 	origin      Point // center Point for hexagon 0,0
+}
+
+func NewLayout(orientation orientation, size Point, origin Point) *Layout {
+	return &Layout{
+		orientation: orientation,
+		size:        size,
+		origin:      origin,
+	}
 }
 
 type orientation struct {
