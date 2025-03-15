@@ -26,7 +26,7 @@ import (
 //   - *
 //   - *
 //     *********
-var defaultLayout = Layout{size: Point{100, 100}, origin: Point{0, 0}, orientation: OrientationFlat}
+var defaultLayout = Layout{Size: Point{100, 100}, Origin: Point{0, 0}, Orientation: OrientationFlat}
 
 // utility functions
 func round(num float64) int {
@@ -54,7 +54,7 @@ func TestHexToPixel(t *testing.T) {
 
 		pixel := HexToPixel(defaultLayout, tt.hexA)
 
-		actual := fmt.Sprintf("%.1f;%.1f", pixel.x, pixel.y)
+		actual := fmt.Sprintf("%.1f;%.1f", pixel.X, pixel.Y)
 
 		if actual != tt.expected {
 			t.Error("Expected:", tt.expected, "got:", actual)
@@ -119,8 +119,8 @@ func TestHexagonCorners(t *testing.T) {
 
 	for i := 0; i < len(corners); i++ {
 
-		actualX := toFixed(corners[i].x, 1)
-		actualY := toFixed(corners[i].y, 1)
+		actualX := toFixed(corners[i].X, 1)
+		actualY := toFixed(corners[i].Y, 1)
 		expectedX := testCase[i].roundedX
 		expectedY := testCase[i].roundedY
 
