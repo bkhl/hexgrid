@@ -56,8 +56,7 @@ type Hex struct {
 }
 
 func NewHex(q, r int) Hex {
-	h := Hex{Q: q, R: r, S: -q - r}
-	return h
+	return Hex{Q: q, R: r, S: -q - r}
 }
 
 func (h Hex) String() string {
