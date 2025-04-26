@@ -75,7 +75,8 @@ hex := PixelToHex(layout, point).Round()
 
 ## Credits
 
-* Pedro Sousa
+* Jannik Bach (<https://github.com/Laminator42>)
+* Pedro Sousa (<https://github.com/pmcxs>)
 * Red Blob Games (<http://www.redblobgames.com/grids/hexagons/implementation.html>)
 
 ## License
