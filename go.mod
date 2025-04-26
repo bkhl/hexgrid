@@ -1,3 +1,3 @@
-module github.com/Laminator42/hexgrid
+module github.com/bkhl/hexgrid
 
-go 1.24.0
+go 1.24.2
