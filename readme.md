@@ -1,19 +1,19 @@
 # Hexgrid
 
-This is a fork of <https://github.com/pmcxs/hexgrid>. It's based on the algorithms described at <http://www.redblobgames.com/grids/hexagons/implementation.html>.
-
-**Note:** For now this is a mere copy with small adjustments for my use case and very much WIP.
+This is a fork of <https://github.com/Laminator42/hexgrid> which in turn was
+forked from <https://github.com/pmcxs/hexgrid>. It's based on the algorithms
+described at <http://www.redblobgames.com/grids/hexagons/implementation.html>.
 
 ## Installation
 
-    go get github.com/Laminator42/hexgrid
+    go get github.com/bkhl/hexgrid
 
 ## Usage
 
 #### Importing
 
 ```go
-import "github.com/Laminator42/hexgrid"
+import "github.com/bkhl/hexgrid"
 ```
 
 ### Examples
@@ -36,7 +36,7 @@ distance := hexagonA.Distance(hexagonB)
 ```go
 origin := NewHex(10,20)
 destination := NewHex(30,40)
-path := origin.LineDraw(destination) 
+path := origin.LineDraw(destination)
 ```
 
 #### Creating a layout
@@ -50,7 +50,7 @@ layout: = layout{size, origin, orientationFlat}
 #### Obtaining the pixel that corresponds to a given hexagon
 
 ```go
-hex := NewHex(1,0)             
+hex := NewHex(1,0)
 pixel := HexToPixel(layout,hex)  // Pixel that corresponds to the center of hex 1,0 (in the given layout)
 ```
 
@@ -60,18 +60,6 @@ pixel := HexToPixel(layout,hex)  // Pixel that corresponds to the center of hex 
 point := point {10,20}
 hex := PixelToHex(layout, point).Round()
 ```
-
-## Contributing
-
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request
-
-## History
-
-0.1. First version
 
 ## Credits
 
