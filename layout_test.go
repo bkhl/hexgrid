@@ -117,7 +117,7 @@ func TestHexagonCorners(t *testing.T) {
 		{50, 86.6},
 	}
 
-	for i := 0; i < len(corners); i++ {
+	for i := range corners {
 
 		actualX := toFixed(corners[i].X, 1)
 		actualY := toFixed(corners[i].Y, 1)

@@ -3,6 +3,7 @@ package hexgrid
 import (
 	"fmt"
 	"math"
+	"slices"
 )
 
 type Direction int
@@ -145,12 +146,7 @@ func (h Hex) Range(r int) []Hex {
 // Determines if a given hexagon is visible from the hexagon, taking into consideration a set of blocking hexagons
 func (h Hex) HasLineOfSight(target Hex, blocking []Hex) bool {
 	contains := func(s []Hex, e Hex) bool {
-		for _, a := range s {
-			if a == e {
-				return true
-			}
-		}
-		return false
+		return slices.Contains(s, e)
 	}
 
 	for _, hexOnLine := range h.LineDraw(target) {
@@ -177,7 +173,7 @@ func (h Hex) FieldOfView(candidates []Hex, blocking []Hex) []Hex {
 // Returns the set of hexagons that form a rectangle with the specified width and height
 func RectangleGrid(width, height int) []Hex {
 	results := make([]Hex, 0)
-	for q := 0; q < width; q++ {
+	for q := range width {
 		qOffset := int(math.Floor(float64(q) / 2.))
 		for r := -qOffset; r < height-qOffset; r++ {
 			results = append(results, NewHex(q, r))

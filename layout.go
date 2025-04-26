@@ -59,7 +59,7 @@ func HexagonCorners(l Layout, h Hex) []Point {
 	corners := make([]Point, 0)
 	center := HexToPixel(l, h)
 
-	for i := 0; i < 6; i++ {
+	for i := range 6 {
 		offset := HexCornerOffset(l, i)
 		corners = append(corners, Point{center.X + offset.X, center.Y + offset.Y})
 	}
