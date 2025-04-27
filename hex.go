@@ -6,6 +6,8 @@ import (
 	"slices"
 )
 
+// Direction represents a one-step move in some direction. The direction names
+// assumes a flat-top layout.
 type Direction int
 
 const (
@@ -26,34 +28,14 @@ var directions = []Hex{
 	NewHex(0, +1),
 }
 
-// hex describes a regular hexagon with Cube Coordinates (although the S coordinate is computed on the constructor)
-// It's also easy to reference them as axial (trapezoidal coordinates):
-// - R represents the vertical axis
-// - Q the diagonal one
-// - S can be ignored
-// For additional reference on these coordinate systems: http://www.redblobgames.com/grids/hexagons/#coordinates
+// Hex describes a regular hexagon with Cube Coordinates (although the S
+// coordinate is computed on the constructor) It's also easy to reference them
+// as axial (trapezoidal coordinates):
 //
-//	         _ _
-//	       /     \
-//	  _ _ /(0,-1) \ _ _
-//	/     \  -R   /     \
-//
-// /(-1,0) \ _ _ /(1,-1) \
-// \  -Q   /     \       /
-//
-//	\ _ _ / (0,0) \ _ _ /
-//	/     \       /     \
-//
-// /(-1,1) \ _ _ / (1,0) \
-// \       /     \  +Q   /
-//
-//	\ _ _ / (0,1) \ _ _ /
-//	      \  +R   /
-//	       \ _ _ /
+// For additional reference on these coordinate systems:
+// http://www.redblobgames.com/grids/hexagons/#coordinates
 type Hex struct {
-	Q int // x axis
-	R int // y axis
-	S int // z axis
+	Q, R, S int
 }
 
 func NewHex(q, r int) Hex {
